@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 import pika
-
-counter = 1
+import datetime
 
 connection = pika.BlockingConnection(
     pika.ConnectionParameters(host='localhost'))
@@ -19,13 +18,12 @@ channel.queue_bind(exchange='gateway',
 
 
 def on_request(ch, method, props, body):
-    print(str(counter) + '- ' + body)
-    counter = counter + 1
+    print("Recibida petición")
     ch.basic_publish(exchange='',
                      routing_key=props.reply_to,
                      properties=pika.BasicProperties(correlation_id = \
                                                          props.correlation_id),
-                     body="Hola desde Python, petición " + str(counter))
+                     body="Son las " + str(datetime.datetime.now()))
     ch.basic_ack(delivery_tag=method.delivery_tag)
 
 
