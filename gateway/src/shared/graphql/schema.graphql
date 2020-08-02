@@ -1,0 +1,39 @@
+type User {
+  username: String!
+  email: String!
+  picture: String
+  enrollmentDate: String!
+  posts: Int!
+}
+
+input UserSignUpInput {
+  username: String!
+  email: String!
+}
+
+type Post {
+  title: String!
+  body: String!
+  publicationDate: String!
+  author: User!
+}
+
+input AddPostInput {
+  title: String!
+  body: String!
+}
+
+type Query {
+  user(username: String!): User
+  recentPosts: [Post]!
+}
+
+type Mutation {
+  signUp(userSignUpInput: UserSignUpInput!): User
+  addPost(addPostInput: AddPostInput!): Post
+}
+
+schema {
+  query: Query
+  mutation: Mutation
+}
