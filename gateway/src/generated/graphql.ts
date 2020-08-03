@@ -38,6 +38,12 @@ export type AddPostInput = {
   body: Scalars['String'];
 };
 
+export type MutationResult = {
+  __typename?: 'MutationResult';
+  accepted: Scalars['Boolean'];
+  failureReason?: Maybe<Scalars['String']>;
+};
+
 export type Query = {
   __typename?: 'Query';
   user?: Maybe<User>;
@@ -51,8 +57,8 @@ export type QueryUserArgs = {
 
 export type Mutation = {
   __typename?: 'Mutation';
-  signUp?: Maybe<User>;
-  addPost?: Maybe<Post>;
+  signUp?: Maybe<MutationResult>;
+  addPost?: Maybe<MutationResult>;
 };
 
 
@@ -70,11 +76,16 @@ export type MutationAddPostArgs = {
 export type ResolverTypeWrapper<T> = Promise<T> | T;
 
 
-export type StitchingResolver<TResult, TParent, TContext, TArgs> = {
+export type LegacyStitchingResolver<TResult, TParent, TContext, TArgs> = {
   fragment: string;
   resolve: ResolverFn<TResult, TParent, TContext, TArgs>;
 };
 
+export type NewStitchingResolver<TResult, TParent, TContext, TArgs> = {
+  selectionSet: string;
+  resolve: ResolverFn<TResult, TParent, TContext, TArgs>;
+};
+export type StitchingResolver<TResult, TParent, TContext, TArgs> = LegacyStitchingResolver<TResult, TParent, TContext, TArgs> | NewStitchingResolver<TResult, TParent, TContext, TArgs>;
 export type Resolver<TResult, TParent = {}, TContext = {}, TArgs = {}> =
   | ResolverFn<TResult, TParent, TContext, TArgs>
   | StitchingResolver<TResult, TParent, TContext, TArgs>;
@@ -124,7 +135,7 @@ export type TypeResolveFn<TTypes, TParent = {}, TContext = {}> = (
   info: GraphQLResolveInfo
 ) => Maybe<TTypes> | Promise<Maybe<TTypes>>;
 
-export type isTypeOfResolverFn<T = {}> = (obj: T, info: GraphQLResolveInfo) => boolean | Promise<boolean>;
+export type IsTypeOfResolverFn<T = {}> = (obj: T, info: GraphQLResolveInfo) => boolean | Promise<boolean>;
 
 export type NextResolverFn<T> = () => Promise<T>;
 
@@ -144,9 +155,10 @@ export type ResolversTypes = {
   UserSignUpInput: UserSignUpInput;
   Post: ResolverTypeWrapper<Post>;
   AddPostInput: AddPostInput;
+  MutationResult: ResolverTypeWrapper<MutationResult>;
+  Boolean: ResolverTypeWrapper<Scalars['Boolean']>;
   Query: ResolverTypeWrapper<{}>;
   Mutation: ResolverTypeWrapper<{}>;
-  Boolean: ResolverTypeWrapper<Scalars['Boolean']>;
 };
 
 /** Mapping between all available schema types and the resolvers parents */
@@ -157,9 +169,10 @@ export type ResolversParentTypes = {
   UserSignUpInput: UserSignUpInput;
   Post: Post;
   AddPostInput: AddPostInput;
+  MutationResult: MutationResult;
+  Boolean: Scalars['Boolean'];
   Query: {};
   Mutation: {};
-  Boolean: Scalars['Boolean'];
 };
 
 export type UserResolvers<ContextType = any, ParentType extends ResolversParentTypes['User'] = ResolversParentTypes['User']> = {
@@ -168,7 +181,7 @@ export type UserResolvers<ContextType = any, ParentType extends ResolversParentT
   picture?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   enrollmentDate?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   posts?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
-  __isTypeOf?: isTypeOfResolverFn<ParentType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType>;
 };
 
 export type PostResolvers<ContextType = any, ParentType extends ResolversParentTypes['Post'] = ResolversParentTypes['Post']> = {
@@ -176,7 +189,13 @@ export type PostResolvers<ContextType = any, ParentType extends ResolversParentT
   body?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   publicationDate?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   author?: Resolver<ResolversTypes['User'], ParentType, ContextType>;
-  __isTypeOf?: isTypeOfResolverFn<ParentType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType>;
+};
+
+export type MutationResultResolvers<ContextType = any, ParentType extends ResolversParentTypes['MutationResult'] = ResolversParentTypes['MutationResult']> = {
+  accepted?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
+  failureReason?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType>;
 };
 
 export type QueryResolvers<ContextType = any, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = {
@@ -185,13 +204,14 @@ export type QueryResolvers<ContextType = any, ParentType extends ResolversParent
 };
 
 export type MutationResolvers<ContextType = any, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = {
-  signUp?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType, RequireFields<MutationSignUpArgs, 'userSignUpInput'>>;
-  addPost?: Resolver<Maybe<ResolversTypes['Post']>, ParentType, ContextType, RequireFields<MutationAddPostArgs, 'addPostInput'>>;
+  signUp?: Resolver<Maybe<ResolversTypes['MutationResult']>, ParentType, ContextType, RequireFields<MutationSignUpArgs, 'userSignUpInput'>>;
+  addPost?: Resolver<Maybe<ResolversTypes['MutationResult']>, ParentType, ContextType, RequireFields<MutationAddPostArgs, 'addPostInput'>>;
 };
 
 export type Resolvers<ContextType = any> = {
   User?: UserResolvers<ContextType>;
   Post?: PostResolvers<ContextType>;
+  MutationResult?: MutationResultResolvers<ContextType>;
   Query?: QueryResolvers<ContextType>;
   Mutation?: MutationResolvers<ContextType>;
 };

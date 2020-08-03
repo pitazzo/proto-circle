@@ -1,4 +1,4 @@
-class Operation {
+class Command {
   private id: string;
   private type: string;
   private ocurredOn: Date;
@@ -40,4 +40,4 @@ class Operation {
   }
 }
 
-export default Operation;
+export default Command;

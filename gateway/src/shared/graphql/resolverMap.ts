@@ -4,20 +4,18 @@ import {
   User,
   Maybe,
   UserSignUpInput,
+  MutationResult,
 } from "./../../generated/graphql";
 import { IResolvers } from "graphql-tools";
-import OperationBus from "../amqp/operationBus";
-import CreateUserCommand from "../../modules/user/create/createUserCommand";
+import CommandBus from "../amqp/CommandBus";
+import CreateUserCommand from "../../modules/user/create/CreateUserCommand";
+import CommandResult from "../application/CommandResult";
+import AddPostCommand from "../../modules/post/add/AddPostCommand";
 
 const resolverMap: IResolvers = {
   Query: {
     recentPosts: async (_: any, __: void): Promise<Array<Post>> => {
-      const bus: OperationBus = await OperationBus.getInstance();
-      const response = await bus.dispatch(new CreateUserCommand("pitazzo", "hola@pedromalo.dev"));
-      console.log(response);
-      return [
-
-      ];
+      return [];
     },
     user: async (
       _: any,
@@ -31,24 +29,30 @@ const resolverMap: IResolvers = {
     addPost: async (
       _: any,
       { addPostInput }: { addPostInput: AddPostInput }
-    ): Promise<Post> => {
-      return {
-        title: "",
-        body: "",
-        publicationDate: "",
-        author: {
-          username: "",
-          email: "",
-          enrollmentDate: "",
-          posts: 0,
-        },
-      };
+    ): Promise<MutationResult> => {
+      const bus: CommandBus = await CommandBus.getInstance();
+      try {
+        const response = await bus.dispatch(
+          new AddPostCommand(addPostInput.title, addPostInput.body)
+        );
+        return response;
+      } catch (e) {
+        return new CommandResult(false, e);
+      }
     },
     signUp: async (
       _: any,
       { userSignUpInput }: { userSignUpInput: UserSignUpInput }
-    ): Promise<Maybe<User>> => {
-      return null;
+    ): Promise<MutationResult> => {
+      const bus: CommandBus = await CommandBus.getInstance();
+      try {
+        const response = await bus.dispatch(
+          new CreateUserCommand(userSignUpInput.username, userSignUpInput.email)
+        );
+        return response;
+      } catch (e) {
+        return new CommandResult(false, e);
+      }
     },
   },
 };

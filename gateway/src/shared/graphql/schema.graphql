@@ -23,14 +23,19 @@ input AddPostInput {
   body: String!
 }
 
+type MutationResult {
+  accepted: Boolean!
+  failureReason: String
+}
+
 type Query {
   user(username: String!): User
   recentPosts: [Post]!
 }
 
 type Mutation {
-  signUp(userSignUpInput: UserSignUpInput!): User
-  addPost(addPostInput: AddPostInput!): Post
+  signUp(userSignUpInput: UserSignUpInput!): MutationResult
+  addPost(addPostInput: AddPostInput!): MutationResult
 }
 
 schema {

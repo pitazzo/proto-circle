@@ -1,6 +1,6 @@
-import Operation from "../../../shared/application/operation";
+import Command from "../../../shared/application/Command";
 
-class CreateUserCommand extends Operation {
+class CreateUserCommand extends Command {
   constructor(username: string, email: string) {
     super(
       "circle.gateway.1.command.user.created",
