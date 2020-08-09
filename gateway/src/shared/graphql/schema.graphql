@@ -6,19 +6,25 @@ type User {
   posts: Int!
 }
 
-input UserSignUpInput {
+input SignUpUserInput {
   username: String!
   email: String!
+}
+
+input EditUserInput {
+  username: String!
+  email: String!
+  picture: String!
 }
 
 type Post {
   title: String!
   body: String!
-  publicationDate: String!
+  publishDate: String!
   author: User!
 }
 
-input AddPostInput {
+input PublishPostInput {
   title: String!
   body: String!
 }
@@ -31,11 +37,13 @@ type MutationResult {
 type Query {
   user(username: String!): User
   recentPosts: [Post]!
+  postsByAuthor(authorID: String!): [Post]!
 }
 
 type Mutation {
-  signUp(userSignUpInput: UserSignUpInput!): MutationResult
-  addPost(addPostInput: AddPostInput!): MutationResult
+  signUpUser(signUpUserInput: SignUpUserInput!): MutationResult!
+  editUser(editUserInput: EditUserInput!): MutationResult!
+  publishPost(publishPostInput: PublishPostInput!): MutationResult!
 }
 
 schema {

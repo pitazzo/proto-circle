@@ -20,20 +20,26 @@ export type User = {
   posts: Scalars['Int'];
 };
 
-export type UserSignUpInput = {
+export type SignUpUserInput = {
   username: Scalars['String'];
   email: Scalars['String'];
+};
+
+export type EditUserInput = {
+  username: Scalars['String'];
+  email: Scalars['String'];
+  picture: Scalars['String'];
 };
 
 export type Post = {
   __typename?: 'Post';
   title: Scalars['String'];
   body: Scalars['String'];
-  publicationDate: Scalars['String'];
+  publishDate: Scalars['String'];
   author: User;
 };
 
-export type AddPostInput = {
+export type PublishPostInput = {
   title: Scalars['String'];
   body: Scalars['String'];
 };
@@ -48,6 +54,7 @@ export type Query = {
   __typename?: 'Query';
   user?: Maybe<User>;
   recentPosts: Array<Maybe<Post>>;
+  postsByAuthor: Array<Maybe<Post>>;
 };
 
 
@@ -55,20 +62,31 @@ export type QueryUserArgs = {
   username: Scalars['String'];
 };
 
+
+export type QueryPostsByAuthorArgs = {
+  authorID: Scalars['String'];
+};
+
 export type Mutation = {
   __typename?: 'Mutation';
-  signUp?: Maybe<MutationResult>;
-  addPost?: Maybe<MutationResult>;
+  signUpUser: MutationResult;
+  editUser: MutationResult;
+  publishPost: MutationResult;
 };
 
 
-export type MutationSignUpArgs = {
-  userSignUpInput: UserSignUpInput;
+export type MutationSignUpUserArgs = {
+  signUpUserInput: SignUpUserInput;
 };
 
 
-export type MutationAddPostArgs = {
-  addPostInput: AddPostInput;
+export type MutationEditUserArgs = {
+  editUserInput: EditUserInput;
+};
+
+
+export type MutationPublishPostArgs = {
+  publishPostInput: PublishPostInput;
 };
 
 
@@ -152,9 +170,10 @@ export type ResolversTypes = {
   User: ResolverTypeWrapper<User>;
   String: ResolverTypeWrapper<Scalars['String']>;
   Int: ResolverTypeWrapper<Scalars['Int']>;
-  UserSignUpInput: UserSignUpInput;
+  SignUpUserInput: SignUpUserInput;
+  EditUserInput: EditUserInput;
   Post: ResolverTypeWrapper<Post>;
-  AddPostInput: AddPostInput;
+  PublishPostInput: PublishPostInput;
   MutationResult: ResolverTypeWrapper<MutationResult>;
   Boolean: ResolverTypeWrapper<Scalars['Boolean']>;
   Query: ResolverTypeWrapper<{}>;
@@ -166,9 +185,10 @@ export type ResolversParentTypes = {
   User: User;
   String: Scalars['String'];
   Int: Scalars['Int'];
-  UserSignUpInput: UserSignUpInput;
+  SignUpUserInput: SignUpUserInput;
+  EditUserInput: EditUserInput;
   Post: Post;
-  AddPostInput: AddPostInput;
+  PublishPostInput: PublishPostInput;
   MutationResult: MutationResult;
   Boolean: Scalars['Boolean'];
   Query: {};
@@ -187,7 +207,7 @@ export type UserResolvers<ContextType = any, ParentType extends ResolversParentT
 export type PostResolvers<ContextType = any, ParentType extends ResolversParentTypes['Post'] = ResolversParentTypes['Post']> = {
   title?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   body?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  publicationDate?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  publishDate?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   author?: Resolver<ResolversTypes['User'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType>;
 };
@@ -201,11 +221,13 @@ export type MutationResultResolvers<ContextType = any, ParentType extends Resolv
 export type QueryResolvers<ContextType = any, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = {
   user?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType, RequireFields<QueryUserArgs, 'username'>>;
   recentPosts?: Resolver<Array<Maybe<ResolversTypes['Post']>>, ParentType, ContextType>;
+  postsByAuthor?: Resolver<Array<Maybe<ResolversTypes['Post']>>, ParentType, ContextType, RequireFields<QueryPostsByAuthorArgs, 'authorID'>>;
 };
 
 export type MutationResolvers<ContextType = any, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = {
-  signUp?: Resolver<Maybe<ResolversTypes['MutationResult']>, ParentType, ContextType, RequireFields<MutationSignUpArgs, 'userSignUpInput'>>;
-  addPost?: Resolver<Maybe<ResolversTypes['MutationResult']>, ParentType, ContextType, RequireFields<MutationAddPostArgs, 'addPostInput'>>;
+  signUpUser?: Resolver<ResolversTypes['MutationResult'], ParentType, ContextType, RequireFields<MutationSignUpUserArgs, 'signUpUserInput'>>;
+  editUser?: Resolver<ResolversTypes['MutationResult'], ParentType, ContextType, RequireFields<MutationEditUserArgs, 'editUserInput'>>;
+  publishPost?: Resolver<ResolversTypes['MutationResult'], ParentType, ContextType, RequireFields<MutationPublishPostArgs, 'publishPostInput'>>;
 };
 
 export type Resolvers<ContextType = any> = {

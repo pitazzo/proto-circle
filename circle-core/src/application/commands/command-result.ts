@@ -1,6 +1,4 @@
-import Command from "./Command";
-
-class CommandResult {
+export class CommandResult {
   accepted!: boolean;
   failureReason?: string;
 
@@ -17,5 +15,3 @@ class CommandResult {
     return this.failureReason;
   }
 }
-
-export default CommandResult;

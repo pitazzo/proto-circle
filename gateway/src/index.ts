@@ -3,7 +3,8 @@ import { createServer } from "http";
 import compression from "compression";
 import cors from "cors";
 
-import apolloServer from "./shared/graphql/apolloServer";
+import apolloServer from "./shared/graphql/apollo-server";
+import OperationBus from "./shared/amqp/operation-bus";
 
 const app = express();
 

@@ -1,0 +1,23 @@
+{
+  "name": "content",
+  "version": "1.0.0",
+  "description": "Content service for circle platform",
+  "main": "index.ts",
+  "scripts": {
+    "start:dev": "npm run build:dev",
+    "build:dev": "nodemon 'src/index.ts' --exec 'ts-node' src/index.ts -e ts,graphql",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/compression": "^1.7.0",
+    "@types/node": "^14.0.27",
+    "nodemon": "^2.0.4",
+    "ts-node": "^8.10.2",
+    "typescript": "^3.9.7"
+  },
+  "dependencies": {
+    "typescript-map": "0.0.7"
+  }
+}

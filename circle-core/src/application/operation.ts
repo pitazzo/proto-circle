@@ -1,4 +1,4 @@
-class Command {
+export class Operation {
   private id: string;
   private type: string;
   private ocurredOn: Date;
@@ -39,5 +39,3 @@ class Command {
     return this.meta;
   }
 }
-
-export default Command;
